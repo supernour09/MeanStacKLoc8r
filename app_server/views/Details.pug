@@ -1,0 +1,45 @@
+extends layout
+
+block content
+    br
+    table.table.table-hover
+     thead
+      tr
+        th(scope='col') Details
+        th(scope='col') info
+     tbody
+      tr
+        th(scope='row') Name
+        td Column content
+      tr
+        th(scope='row') Address
+        td Column content
+      tr
+        th(scope='row') Rating
+        td Column content
+      tr
+        th(scope='row') Opening hours
+        td Column content
+      tr
+        th(scope='row') Facilities
+        td Column content
+      tr
+        th(scope='row') Location map
+        td Column content
+    
+    h2 Reviews
+    .card.text-white.bg-secondary.mb-3
+        .card-body.text-white
+          h4.card-title Nour Ahmed
+          small 2/2/2018 : 
+          small                                                                                                   
+              span.fa.fa-star                
+              span.fa.fa-star                
+              span.fa.fa-star                
+              span.fa.fa-star-empty          
+              span.fa.fa-star-empty  
+          p.card-text
+          | Some Text
+
+    button.btn.btn-secondary(type='button') Add Review
+
