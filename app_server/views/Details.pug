@@ -1,4 +1,7 @@
 extends layout
+include ./_include/outputRating
+include ./_include/loopOfFacilities
+include ./_include/displayReview
 
 block content
     br
@@ -9,37 +12,44 @@ block content
         th(scope='col') info
      tbody
       tr
-        th(scope='row') Name
-        td Column content
+        th(scope='row') Name 
+        td=location.name
       tr
         th(scope='row') Address
-        td Column content
+        td=location.address
       tr
-        th(scope='row') Rating
-        td Column content
+        th(scope='row') Rating 
+        td 
+         +outputRating(location.rating)
+
       tr
         th(scope='row') Opening hours
-        td Column content
+        td 
+         each time in location.openingTimes
+          p 
+           | #{time.days} : 
+           if time.closed
+              | closed
+           else 
+              | #{time.opening} - #{time.closing}
+
       tr
         th(scope='row') Facilities
-        td Column content
+        td 
+         +loopOfFacilities(location.facilities)
       tr
         th(scope='row') Location map
-        td Column content
+        td 
+         //have problems
+         img.img-responsive.img-rounded(src="http://maps.googleapis.com/maps/api/staticmap?center=#{location.coords.lat},#{location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{location.coords.lat},#{location.coords.lng}&scale=2")
     
     h2 Reviews
     .card.text-white.bg-secondary.mb-3
         .card-body.text-white
-          h4.card-title Nour Ahmed
-          small 2/2/2018 : 
-          small                                                                                                   
-              span.fa.fa-star                
-              span.fa.fa-star                
-              span.fa.fa-star                
-              span.fa.fa-star-empty          
-              span.fa.fa-star-empty  
-          p.card-text
-          | Some Text
+         each rev in location.reviews
+          +displayReview(rev)
+           
+
 
     button.btn.btn-secondary(type='button') Add Review
 

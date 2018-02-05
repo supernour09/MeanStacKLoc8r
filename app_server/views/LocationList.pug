@@ -1,4 +1,6 @@
 extends layout
+include ./_include/outputRating
+include ./_include/loopOfFacilities
 
 block content
     #banner.page-header       
@@ -9,20 +11,16 @@ block content
     .row
       .col-xs-12.col-sm-8                   
         .row.list-group
+         each loc in locations
           .col-xs-12.list-group-item                         
             h4                                               
-              a(href="/location") Starcups                                                      
-              span.fa.fa-star                
-              span.fa.fa-star                
-              span.fa.fa-star                
-              span.fa.fa-star-empty          
-              span.fa.fa-star-empty          
-            span.badge.pull-right.badge-default 100m       
-            p.address 125 High Street, Reading, RG6 1PS      
-            p                                                
-              span.badge.badge-pill.badge-warning Hot drinks                                                 
-              span.badge.badge-pill.badge-success Food                                                       
-              span.badge.badge-pill.badge-info Premium wifi          
+              a(href="/location")=loc.name  
+              +outputRating(loc.rating)
+            span.badge.pull-right.badge-pill.badge-danger=loc.distance       
+            p Address: #{loc.address}      
+            p                             
+              +loopOfFacilities(loc.facilities)                   
+                        
 
       .col-xs-12.col-sm-4   
-        p.lead Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee,cake or a pint? Let Loc8r help you find the place you're looking for.  
+        p.lead Looking for wifi and a seat Loc8r? helps you find places to work when out and about. Perhaps with coffee,cake or a pint? Let Loc8r help you find the place you're looking for.  

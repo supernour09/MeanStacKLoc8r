@@ -1,0 +1,12 @@
+mixin outputRating(rate)
+    //show the stars 
+    // to genrate the star for rating                                                  
+    - for (var i = 1; i <= rate; i++)
+        span.fa.fa-star
+    // to genrate the empty star
+    - for (i = rate; i < 5; i++)
+        span.fa.fa-star-o
+
+
+
+ 

@@ -1,0 +1,7 @@
+mixin displayReview(review)
+          // Display Review 
+          h4.card-title=review.author
+          small=review.timestamp                                                                                                    
+            +outputRating(review.rating)  
+          p.card-text=review.reviewText
+          <hr/>
