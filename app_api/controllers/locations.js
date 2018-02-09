@@ -1,6 +1,30 @@
 var mongoose = require('mongoose');
 var Loc = mongoose.model('Location');
-//var op = mongoose.model('openingTime');
+
+
+
+
+//commen function to send json responses 
+var sendJsonResponse = function (res, status, content) {
+    res.status(status);
+    res.json(content);
+};
+
+
+//to convert from Rads to km and vise verse 
+var theEarth = (function () {
+    var earthRadius = 6371; // km, miles is 3959 Define fixed value
+    var getDistanceFromRads = function (rads) {
+        return parseFloat(rads * earthRadius);
+    };
+    var getRadsFromDistance = function (distance) {
+        return parseFloat(distance / earthRadius);
+    };
+    return {
+        getDistanceFromRads: getDistanceFromRads,
+        getRadsFromDistance: getRadsFromDistance
+    };
+})();
 
 //TODO: test the distanse calculations
 //this function to get all location in the dist of 20km from the centre point send in the query in url
@@ -20,7 +44,7 @@ module.exports.locationsListByDistance = function (req, res) {
                 "$geoNear": {
                     "near": {
                         "type": "Point",
-                        "coordinates": [2, 4]
+                        "coordinates": [lng, lat]
                     },
                     "spherical": true,
                     "distanceField": "dis",
@@ -50,22 +74,11 @@ module.exports.locationsListByDistance = function (req, res) {
 };
 
 
-var theEarth = (function () {
-    var earthRadius = 6371; // km, miles is 3959 Define fixed value
-    var getDistanceFromRads = function (rads) {
-        return parseFloat(rads * earthRadius);
-    };
-    var getRadsFromDistance = function (distance) {
-        return parseFloat(distance / earthRadius);
-    };
-    return {
-        getDistanceFromRads: getDistanceFromRads,
-        getRadsFromDistance: getRadsFromDistance
-    };
-})();
 
+//post location
+//return 400 if : 1 - error in database or creation
+//return 201 if : 1 - success create 
 module.exports.locationsCreate = function (req, res) {
-    console.log(req.body);
     Loc.create({
         name: req.body.name,
         address: req.body.address,
@@ -97,6 +110,7 @@ module.exports.locationsCreate = function (req, res) {
 //return 404 if : 1 - location not found 
 //              : 2 - error from database
 //              : 3 - params not provided
+//return 200 if : 1 - success return location 
 module.exports.locationsReadOne = function (req, res) {
     //over protuection just better to be safe as if the request /location with no params
     //it will be routed to onther function anyway 
@@ -122,20 +136,90 @@ module.exports.locationsReadOne = function (req, res) {
     }
 };
 
+
+
+
+//Put location (Update) with the params.id send in the request
+//return 404 if : 1 - location not found 
+//              : 2 - params not provided
+//return 400 if : 1 - error from database
+//return 200 if : 1 - success update 
 module.exports.locationsUpdateOne = function (req, res) {
-    sendJsonResponse(res, 200, { "status": "success" });
+    if (!req.params.locationid) {
+        sendJsonResponse(res, 404, {
+            "message": "Not found, locationid is required"
+        });
+        return;
+    }
+    Loc
+        .findById(req.params.locationid)
+        .select('-reviews -rating')//to disSelect the reviews and rating 
+        .exec(
+        function (err, location) {
+            if (!location) {
+                sendJsonResponse(res, 404, {
+                    "message": "locationid not found"
+                });
+                return;
+            } else if (err) {
+                sendJsonResponse(res, 400, err);
+                return;
+            }
+            location.name = req.body.name;
+            location.address = req.body.address;
+            location.facilities = req.body.facilities.split(",");
+            location.coords = [parseFloat(req.body.lng), parseFloat(req.body.lat)];
+            location.openingTimes = [{
+                days: req.body.days1,
+                opening: req.body.opening1,
+                closing: req.body.closing1,
+                closed: req.body.closed1,
+            }, {
+                days: req.body.days2,
+                opening: req.body.opening2,
+                closing: req.body.closing2,
+                closed: req.body.closed2,
+            }];
+            location.save(function (err, location) {
+                if (err) {
+                    sendJsonResponse(res, 404, err);
+                } else {
+                    sendJsonResponse(res, 200, location);
+                }
+            });
+        }
+        );
 };
 
+
+
+
+//Delete location (Update) with the params.id send in the request
+//return 404 if : 1 - location not found 
+//              : 2 - params not provided
+//return 204 if : 1 - success Delete
 module.exports.locationsDeleteOne = function (req, res) {
-    sendJsonResponse(res, 200, { "status": "success" });
+    var locationid = req.params.locationid;
+    if (locationid) {
+        Loc
+            .findByIdAndRemove(locationid)
+            .exec(
+            function (err, location) {
+                if (err) {
+                    sendJsonResponse(res, 404, err);
+
+                    return
+                }
+                sendJsonResponse(res, 204, null);
+            }
+            );
+    } else {
+        sendJsonResponse(res, 404, {
+            "message": "No locationid"
+        });
+    }
 };
 
 
 
 
-
-
-var sendJsonResponse = function (res, status, content) {
-    res.status(status);
-    res.json(content);
-};
