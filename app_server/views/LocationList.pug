@@ -9,12 +9,14 @@ block content
         h1= pageHeader.title
          ssmall &nbsp;#{pageHeader.strapline}
     .row
-      .col-xs-12.col-sm-8                   
+      .col-xs-12.col-sm-8  
+        .error=message                
         .row.list-group
          each loc in locations
           .col-xs-12.list-group-item                         
-            h4                                               
-              a(href="/location")=loc.name  
+            h4
+              - var str = "/location/"+loc._id                                     
+              a(href=str)= loc.name  
               +outputRating(loc.rating)
             span.badge.pull-right.badge-pill.badge-danger=loc.distance       
             p Address: #{loc.address}      

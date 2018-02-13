@@ -1,14 +1,14 @@
 extends layout
 
 block content
-    form
-      fieldset
+    h1=title
+    form(action="", method="post", role="form")
         .form-group
           label Name
-          input#name.form-control(type='text', placeholder='Enter Your Name')
+          input#name.form-control(type='text',name="name", placeholder='Enter Your Name')
         .form-group
           label Example select
-          select#rate.form-control
+          select#rate.form-control(name="rating")
             option 1
             option 2
             option 3
@@ -16,5 +16,5 @@ block content
             option 5
         .form-group
           label(for='text') Review
-          textarea#review.form-control(rows='3')
-      button.btn.btn-secondary(type='submit') Submit
+          textarea#review.form-control(rows='3' , name="review")
+        button.btn.btn-secondary(type='submit') Submit

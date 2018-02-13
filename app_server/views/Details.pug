@@ -40,8 +40,9 @@ block content
       tr
         th(scope='row') Location map
         td 
-         //TODO: have problems
-         img.img-responsive.img-rounded(src="http://maps.googleapis.com/maps/api/staticmap?center=#{location.coords.lat},#{location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{location.coords.lat},#{location.coords.lng}&scale=2")
+         // TODO: Add marer for the place it self 
+         -var srcc = "https://maps.googleapis.com/maps/api/staticmap?center="+location.coords.lng+","+location.coords.lat+"&zoom=17&size=400x350&maptype=roadmap&key=AIzaSyChxAQCve2o_pd9lS9zSAoWm2HLOwOkKIE"
+         img.img-responsive.img-rounded(src=srcc)
     
     h2 Reviews
     .card.text-white.bg-secondary.mb-3
@@ -50,6 +51,6 @@ block content
           +displayReview(rev)
            
 
-
-    button.btn.btn-secondary(type='button') Add Review
+ 
+    a(class='btn btn-secondary' href=location._id+'/review/new') Add Review
 

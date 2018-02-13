@@ -8,6 +8,7 @@ var Loc = mongoose.model('Location')
 //return 201 if : 1 - success create 
 module.exports.reviewsCreate = function (req, res) {
     var locationid = req.params.locationid;
+   
     if (locationid) {
         Loc
             .findById(locationid)
@@ -15,6 +16,7 @@ module.exports.reviewsCreate = function (req, res) {
             .exec(
             function (err, location) {
                 if (err) {
+                    console.log(err);
                     sendJsonResponse(res, 400, err);
                 } else {
                     //to add the Review
@@ -44,6 +46,7 @@ var doAddReview = function (req, res, location) {
         location.save(function (err, location) {
             var thisReview;
             if (err) {
+                console.log(err);
                 sendJsonResponse(res, 400, err);
             } else {
                 updateAverageRating(location._id);

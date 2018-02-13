@@ -6,88 +6,168 @@ var apiOptions = {
 
 /* Home page Page  */
 module.exports.listLocations = function (req, res) {
-  res.render('LocationList', {
-    title: 'Loc8r - find a place to work with wifi',
-    pageHeader: {
-      title: 'Loc8r',
-      strapline: 'Find places to work with wifi near you!'
-    },
-    locations: [{
-      name: 'Starcups',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 3,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      distance: '100m'
-    }, {
-      name: 'Cafe Hero',
-      address: '125 High Street, Reading, RG6 2PS',
-      rating: 4,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      distance: '200m'
-    }, {
-      name: 'Burger Queen',
-      address: '125 High Street, Reading, RG6 3PS',
-      rating: 2,
-      facilities: ['Food', 'Premium wifi'],
-      distance: '250m'
-    }]
-  }
+  var path = '/api/locations';
+  var requestOptions = {
+    url: apiOptions.server + path,
+    method: "GET",
+    json: {},
+    qs: {
+      lng: 30.044420,
+      lat: 31.235712,
+      maxDistance: 20
+    }
+  };
+  request(
+    requestOptions,
+    function (err, response, body) {
+
+      if (err) {
+        console.log(err);
+      } else {
+        if (response.statusCode === 200 && body.length) {
+          for (var i = 0; i < body.length; i++) {
+            body[i].distance = _formatDistance(body[i].distance);
+          }
+        }
+        var message
+        if (!(body instanceof Array)) {
+          message = "API Lookup Error";
+          body = [];
+        } else if (!body.length) {
+          message = "No places found nearby";
+        }
+        res.render('LocationList', {
+          title: 'Loc8r - find a place to work with wifi',
+          pageHeader: {
+            title: 'Loc8r',
+            strapline: 'Find places to work with wifi near you!'
+          },
+          sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about.Perhaps with coffee, cake or a pint ? Let Loc8r",
+          locations: body,
+          message: message
+        });
+      }
+    }
   );
+
 };
 
+var _formatDistance = function (distance) {
+  var numDistance, unit;
+  if (distance > 1) {
+    numDistance = parseFloat(distance).toFixed(1);
+    unit = 'km';
+  } else {
+    numDistance = parseInt(distance * 1000, 10);
+    unit = 'm';
+  }
+  return numDistance + unit;
+};
 
 /* Location Details Page  */
 module.exports.locationDetails = function (req, res) {
-  res.render('Details', {
-    title: 'Starcups',
-    pageHeader: { title: 'Starcups' },
-    sidebar: {
-      context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
-      callToAction: 'If you\'ve been and you like it - or if you don\'t please leave a review to help other people just like you.'
-    },
-    location: {
-      name: 'Starcups',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 3,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      coords: { lat: 51.455041, lng: -0.9690884 },
-      openingTimes: [{
-        days: 'Monday - Friday',
-        opening: '7:00am',
-        closing: '7:00pm',
-        closed: false
-      }, {
-        days: 'Saturday',
-        opening: '8:00am',
-        closing: '5:00pm',
-        closed: false
-      }, {
-        days: 'Sunday',
-        closed: true
-      }],
-      reviews: [{
-        author: 'Simon Holmes',
-        rating: 5,
-        timestamp: '16 July 2013',
-        reviewText: 'What a great place. I can\'t say enough good things about it.'
-      }, {
-        author: 'Charlie Chaplin',
-        rating: 3,
-        timestamp: '16 June 2013',
-        reviewText: 'It was okay. Coffee wasn\'t great, but the wifi was fast.'
-      }]
+  getLocationInfo(req, res, renderDetailsLocation);
+
+};
+
+var getLocationInfo = function (req, res, callback) {
+  var requestOptions, path;
+  path = "/api/locations/" + req.params.locationId;
+  requestOptions = {
+    url: apiOptions.server + path,
+    method: "GET",
+    json: {}
+  };
+
+  request(
+    requestOptions,
+    function (err, response, body) {
+      var data = body;
+      if (response.statusCode === 200) {
+        data.coords = {
+          lng: body.coords[0],
+          lat: body.coords[1]
+        };
+        callback(req, res, data);
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    }
+  );
+}
+
+
+var _showError = function (req, res, status) {
+  var message;
+  if (status === 404) {
+    message = "404, page not found ";
+  } else {
+    message = status + ", something's gone wrong";
+  }
+  res.status(status);
+  res.render('error', {
+    message: message,
+    error: {
+      status: status
     }
   });
 };
 
+var renderDetailsLocation = function (req, res, locDetail) {
+  res.render('Details', {
+    title: locDetail.name,
+    pageHeader: {
+      title: locDetail.name
+    },
+    sidebar: {
+      context: 'is on Loc8r because it has accessible wifi and space to sitdown with your laptop and get some work done.',
+      callToAction: 'If you\'ve been and you like it - or if you don\'t - please leave a review to help other people just like you.'
+    },
+    location: locDetail
+  });
+}
+
+
+
 /* Add Review Page  */
 module.exports.addReview = function (req, res) {
-  res.render('Add Review', { title: 'Add Review' });
+  getLocationInfo(req, res, renderReviewForm);
+
 };
 
+var renderReviewForm = function (req, res, data) {
+  res.render('Add Review', {
+    title: 'Review ' + data.name + ' on Loc8r',
+    pageHeader: {
+      title: 'Review ' + data.name
+    }
+  });
+
+}
 
 
-module.exports.homelist = function (req, res) {
-  res.render('locations-list',
+module.exports.doAddReview = function (req, res) {
+  var requestOptions, path, locationid, postdata;
+  console.dir(req.body);
+  locationid = req.params.locationid;
+  path = "/api/locations/" + locationid + '/reviews';
+  postdata = {
+    author: req.body.name,
+    rating: parseInt(req.body.rating, 10),
+    reviewText: req.body.review
+  };
+  requestOptions = {
+    url: apiOptions.server + path,
+    method: "POST",
+    json: postdata
+  };
+  request(requestOptions,
+    function (err, response, body) {
+      if (response.statusCode === 201) {
+        res.redirect('/location/' + locationid);
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    }
   );
 };

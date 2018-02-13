@@ -19,9 +19,9 @@ var locationSchema = new mongoose.Schema({
         closed: { type: Boolean, required: true }
     }],
     reviews: [{
-        author: String,
+        author: {type: String, required: true},
         rating: { type: Number, required: true, min: 0, max: 5 },
-        reviewText: String,
+        reviewText: {type: String, required: true},
         createdOn: { type: Date, "default": Date.now }
     }]
 });
