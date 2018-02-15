@@ -6,49 +6,14 @@ var apiOptions = {
 
 /* Home page Page  */
 module.exports.listLocations = function (req, res) {
-  var path = '/api/locations';
-  var requestOptions = {
-    url: apiOptions.server + path,
-    method: "GET",
-    json: {},
-    qs: {
-      lng: 30.044420,
-      lat: 31.235712,
-      maxDistance: 20
-    }
-  };
-  request(
-    requestOptions,
-    function (err, response, body) {
-
-      if (err) {
-        console.log(err);
-      } else {
-        if (response.statusCode === 200 && body.length) {
-          for (var i = 0; i < body.length; i++) {
-            body[i].distance = _formatDistance(body[i].distance);
-          }
-        }
-        var message
-        if (!(body instanceof Array)) {
-          message = "API Lookup Error";
-          body = [];
-        } else if (!body.length) {
-          message = "No places found nearby";
-        }
-        res.render('LocationList', {
-          title: 'Loc8r - find a place to work with wifi',
-          pageHeader: {
-            title: 'Loc8r',
-            strapline: 'Find places to work with wifi near you!'
-          },
-          sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about.Perhaps with coffee, cake or a pint ? Let Loc8r",
-          locations: body,
-          message: message
-        });
-      }
-    }
-  );
+  res.render('LocationList', {
+    title: 'Loc8r - find a place to work with wifi',
+    pageHeader: {
+      title: 'Loc8r',
+      strapline: 'Find places to work with wifi near you!'
+    },
+    sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work when out and about.Perhaps with coffee, cake or a pint ? Let Loc8r"
+  });
 
 };
 
