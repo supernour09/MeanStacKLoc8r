@@ -11,20 +11,6 @@ var sendJsonResponse = function (res, status, content) {
 };
 
 
-//to convert from Rads to km and vise verse 
-var theEarth = (function () {
-    var earthRadius = 6371; // km, miles is 3959 Define fixed value
-    var getDistanceFromRads = function (rads) {
-        return parseFloat(rads * earthRadius);
-    };
-    var getRadsFromDistance = function (distance) {
-        return parseFloat(distance / earthRadius);
-    };
-    return {
-        getDistanceFromRads: getDistanceFromRads,
-        getRadsFromDistance: getRadsFromDistance
-    };
-})();
 
 //TODO: test the distanse calculations
 //this function to get all location in the dist of 20km from the centre point send in the query in url
