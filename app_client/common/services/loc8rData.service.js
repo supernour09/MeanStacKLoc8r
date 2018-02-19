@@ -1,7 +1,7 @@
 (function () {
     angular
         .module('loc8rApp')
-        .service('loc8rData', function ($http) {
+        .service('loc8rData',['$http', function ($http) {
             var lng, lat;
             this.set = function (_lng, _lat) {
                 lng = parseFloat(_lng);
@@ -17,5 +17,6 @@
                 return $http.get('/api/locations?lng=' + lat + '&lat=' + lng + '&maxDistance=20000');
             }
 
-        })
+        }])
+   
 })();

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="loc8rApp">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loc8r</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.3/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-+lmTKXkS+c9d34U9obDdGOZT7zqFicJDkhckYYsW7oenXR37T2OEV4uqfUO45M87"
+        crossorigin="anonymous">
+    <link rel='stylesheet' , href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <base href="/">
+</head>
+
+<body>
+    <navigation></navigation>
+    <div class="container">
+        <page-header content="vm.pageHeader"></page-header>
+        <div ng-view>
+        </div>
+        <footer-generic></footer-generic>
+    </div>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' crossorigin='anonymous'></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular-route.js"></script>
+
+    <script src='/app.js'></script>
+    <script src='/home/home.controller.js'></script>
+    <script src="/common/module/ngGeolocation.min.js"></script>
+    <script src='/common/services/loc8rData.service.js'></script>
+    <script src='/common/directive/ratingStars/ratingStars.directive.js'></script>
+    <script src='/common/directive/footerGeneric/footerGeneric.directive.js'></script>
+    <script src='/common/directive/navigation/navigation.directive.js'></script>
+    <script src='/about/about.controller.js'></script>
+    <script src='/locationDetail/locationDetail.controller.js'></script>
+    <script src='/common/filters/formatDistance.filter.js'></script>
+
+</body>
+
+</html>
