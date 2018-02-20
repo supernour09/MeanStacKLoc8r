@@ -9,7 +9,7 @@
             scope: {
                 content: '=content'
             },
-            templateUrl: '/common/directives/pageHeader/pageHeader.template.html'
+            templateUrl: 'common/directive/pageHeader/pageHeader.template.html'
         };
     }
 })();

@@ -1,5 +1,5 @@
 (function () {
-    var app = angular.module('loc8rApp', ["ngRoute", "ngGeolocation"]);
+    var app = angular.module('loc8rApp', ['ngRoute', 'ngGeolocation','ngAnimate', 'ngSanitize', 'ui.bootstrap']);
 
 
     function config($routeProvider, $locationProvider) {
@@ -15,7 +15,7 @@
                 controllerAs: 'vm'
             })
             .when('/location/:locationid', {
-                templateUrl: '/locationDetail/locationDetail.view.html',
+                templateUrl: 'locationDetail/locationDetail.view.html',
                 controller: 'locationDetailCtrl',
                 controllerAs: 'vm'
                 })

@@ -17,6 +17,10 @@
                 return $http.get('/api/locations?lng=' + lat + '&lat=' + lng + '&maxDistance=20000');
             }
 
+            this.getLocationById = function(id){
+                return $http.get('/api/locations/' + id);
+            }
+
         }])
    
 })();
