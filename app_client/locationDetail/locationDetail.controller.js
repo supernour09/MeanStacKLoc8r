@@ -23,7 +23,7 @@
                     var modalInstance = $uibModal.open({
                         ariaLabelledBy: 'modal-title',
                         ariaDescribedBy: 'modal-body',
-                        templateUrl: '/reviewModal/reviewModal.view.html',
+                        templateUrl: 'reviewModal/reviewModal.view.html',
                         controller: 'reviewModalCtrl',
                         controllerAs: 'vm',
                         size: 'lg',
